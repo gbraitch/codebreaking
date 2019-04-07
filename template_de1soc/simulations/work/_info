@@ -1,0 +1,137 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/altera/14.1
+vd_memory
+Z0 !s110 1552634008
+!i10b 1
+!s100 HDOEeSIE7^2=42a3kke^20
+IZAZG6C;HfLYFQ_[18W]l20
+Z1 V`JN@9S9cnhjKRR_L]QIcM3
+Z2 d//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/modelsim
+w1552546505
+8//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/d_memory.v
+F//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/d_memory.v
+Z3 L0 40
+Z4 OV;L;10.3c;59
+r1
+!s85 0
+31
+!s108 1552634008.729000
+!s107 //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/d_memory.v|
+!s90 -reportprogress|300|-work|work|-stats=none|//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/d_memory.v|
+!i113 1
+Z5 o-work work
+ve_memory
+R0
+!i10b 1
+!s100 QlC<gQkW3kLB4Oc5^HADa3
+I`H1Vi`4VO8b:n<Z2ImB0g3
+R1
+R2
+w1552546163
+8//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/e_memory.v
+F//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/e_memory.v
+R3
+R4
+r1
+!s85 0
+31
+!s108 1552634008.042000
+!s107 //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/e_memory.v|
+!s90 -reportprogress|300|-work|work|-stats=none|//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/e_memory.v|
+!i113 1
+R5
+vksa
+Z6 DXx6 sv_std 3 std 0 22 <EOTafDcUY:cQeO^ICn]m3
+Z7 !s110 1552634050
+!i10b 1
+!s100 o`6zUb:>La=S9cRJ6I`Fk2
+IR>mQfSEVGOBo0^bhR:15F0
+R1
+!s105 ksa_sv_unit
+S1
+R2
+w1552633348
+8//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa.sv
+F//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa.sv
+L0 1
+R4
+r1
+!s85 0
+31
+!s108 1552634050.311000
+!s107 //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa.sv|
+!i113 1
+Z8 o-work work -sv
+vksa_tb
+R6
+R7
+!i10b 1
+!s100 W9Qi_AR:QF6Q3UUb6zI523
+I2M;i`>jihd7;?28_]S?gC0
+R1
+!s105 ksa_tb_sv_unit
+S1
+R2
+w1552633992
+8//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa_tb.sv
+F//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa_tb.sv
+L0 1
+R4
+r1
+!s85 0
+31
+!s108 1552634050.452000
+!s107 //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa_tb.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa_tb.sv|
+!i113 1
+R8
+vs_memory
+R0
+!i10b 1
+!s100 BjRR>bb68YbUSj33Bj_^]0
+IiOQ8YmPo@><U79GMjbTd:3
+R1
+R2
+w1552513454
+8//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/s_memory.v
+F//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/s_memory.v
+R3
+R4
+r1
+!s85 0
+31
+!s108 1552634008.434000
+!s107 //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/s_memory.v|
+!s90 -reportprogress|300|-work|work|-stats=none|//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/s_memory.v|
+!i113 1
+R5
+vSevenSegmentDisplayDecoder
+R7
+!i10b 1
+!s100 04cdEA1ld]g_`l4zO2j1S0
+I=P6H9adNc`eaLNiJo`Hc12
+R1
+R2
+w1295643712
+8//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/SevenSegmentDisplayDecoder.v
+F//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/SevenSegmentDisplayDecoder.v
+L0 1
+R4
+r1
+!s85 0
+31
+!s108 1552634050.609000
+!s107 //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/SevenSegmentDisplayDecoder.v|
+!s90 -reportprogress|300|-work|work|-stats=none|//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/SevenSegmentDisplayDecoder.v|
+!i113 1
+R5
+n@seven@segment@display@decoder

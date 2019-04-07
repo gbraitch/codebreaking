@@ -1,0 +1,15 @@
+//Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/SevenSegmentDisplayDecoder.v {1 {vlog -work work -stats=none //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/SevenSegmentDisplayDecoder.v
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module SevenSegmentDisplayDecoder
+
+Top level modules:
+	SevenSegmentDisplayDecoder
+
+} {} {}} //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa_tb.sv {1 {vlog -work work -sv -stats=none //Mac/Documents/UBC/3/Term2/CPEN311/Labs/Lab4-Codebreaking/template_de1soc/ksa_tb.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module ksa_tb
+
+Top level modules:
+	ksa_tb
+
+} {} {}}

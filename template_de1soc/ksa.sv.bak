@@ -1,0 +1,170 @@
+module ksa (
+CLOCK_50,
+LEDR,
+KEY,
+SW,
+HEX0,
+HEX1,
+HEX2,
+HEX3,
+HEX4,
+HEX5   
+);
+    input                       CLOCK_50;
+    output           [9:0]      LEDR;
+    input            [3:0]      KEY;
+    input            [9:0]      SW;
+    output           [6:0]      HEX0;
+    output           [6:0]      HEX1;
+    output           [6:0]      HEX2;
+    output           [6:0]      HEX3;
+    output           [6:0]      HEX4;
+    output           [6:0]      HEX5;
+
+
+    parameter FILL_S                = 8'b0000_0001;
+    parameter INITIALIZE            = 8'b0000_0000;
+    parameter NEXT                  = 8'b0000_0010;
+    parameter TASK2A_START          = 8'b0000_0011;
+    parameter PART2                 = 8'b0000_0100;
+    parameter PART3                 = 8'b0000_0101;
+    parameter PART4                 = 8'b0000_0110;
+    parameter PART5                 = 8'b0000_0111;   
+    parameter PART6                 = 8'b0000_1000;
+    parameter PART7                 = 8'b0000_1001;
+    parameter PART8                 = 8'b0000_1010;
+    parameter BUFFER1               = 8'b0000_1011;
+    parameter PART9                 = 8'b0000_1100;
+    parameter PART10                = 8'b0000_1101;
+
+    logic clk;
+    logic reset_n;
+    logic [6:0] ssOut;
+    logic [3:0] nIn;
+    logic [255:0] s;
+    logic [7:0] i, j;
+    logic s_wren;
+    logic [7:0] s_addr;
+    logic [7:0] s_data;
+    logic [7:0] s_q;
+    logic [7:0] state;
+    logic [24:0] secret_key;
+    logic [7:0] read_val_i;
+    logic [7:0] read_val_j;
+    logic [7:0] keyval;
+
+
+    assign clk = CLOCK_50;
+    assign reset_n = KEY[3];
+    assign secret_key = 32'b00000000_00000010_01001001;
+
+    // Instantiate Memory
+    s_memory S(
+        .address(s_addr),
+        .clock(clk),
+        .data(s_data),
+        .wren(s_wren),
+        .q(s_q)
+    );
+
+    always @(posedge clk)
+    begin
+        case(state)
+        INITIALIZE:
+            begin
+                i <= 8'b0;
+                j <= 8'b0;
+                secret_key[0] <= 8'h0;
+                secret_key[1] <= 8'h2;
+                secret_key[2] <= 8'h49;
+                state <= FILL_S;
+            end
+        FILL_S: 
+            begin
+                s_addr  <= i;
+                s_data  <= i;
+                s_wren  <= 1'b1;
+                i <= i + 3;
+                if(i > 255) state <= TASK2A_START;
+                else state <= FILL_S;
+            end
+        TASK2A_START: 
+            begin
+                s_wren = 1'b0;
+                i <= 8'b0;
+                j <= 8'b0;
+                state <= PART2;
+            end
+        PART2:
+            begin
+                s_addr <= i;
+                keyval = i % 3;
+                state <= PART3;
+            end
+        PART3:
+            begin
+                case(keyval)
+                8'd0: keyval <= secret_key[23:16];
+                8'd1: keyval <= secret_key[15:8];
+                8'd2: keyval <= secret_key[7:0];
+                default: keyval <= 8'b0;
+                endcase
+                state <= PART4;
+            end
+        PART4:
+            begin
+                read_val_i <= s_q;
+                j <= (j + s_q + keyval);
+                state <= PART5;
+            end
+        PART5:
+            begin
+                s_addr <= j;
+                state <= BUFFER1;
+            end
+        BUFFER1: state <= PART6;
+        PART6:
+            begin
+                read_val_j <= s_q;
+                s_wren <= 1'b1;  
+                state <= PART7;              
+            end
+        PART7:
+            begin
+                s_addr <= j;
+                s_data <= read_val_i;
+                state <= PART8;                
+            end
+        PART8:
+            begin
+                s_addr <= i;
+                s_data <= read_val_j;
+                state <= PART9;
+            end
+        PART9:
+            begin
+                s_wren <= 1'b0;
+                state <= PART10;
+            end
+        PART10:
+            begin
+                i <= i + 1;
+                if (i > 255) state <= NEXT;
+                else state <= PART2;    
+            end
+        NEXT: 
+            begin
+            i <= 8'b0;
+            j <= 8'b0;
+            wren <= 1'b0;
+            state <= NEXT;
+            end
+        default: state <= INITIALIZE;
+        endcase
+    end
+            
+
+
+    SevenSegmentDisplayDecoder mod(.nIn(nIn), .ssOut(ssOut));
+
+endmodule

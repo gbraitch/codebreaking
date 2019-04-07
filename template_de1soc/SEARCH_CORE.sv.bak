@@ -1,0 +1,266 @@
+module SEARCH_CORE(
+    input logic stop,
+    input logic clk,
+    input [23:0] logic key_start,
+    input [23:0] logic key_end,
+    input logic reset,
+    output [23:0] logic success_key,
+    output logic success
+);
+
+parameter INITIALIZE            =   8'b0000_0000;      
+parameter FILL_S                =   8'b0000_0001;  
+parameter READ_SI               =   8'b0000_0010;   
+parameter WAIT_SI               =   8'b0000_0011;   
+parameter CALCJ                 =   8'b0000_0100;   
+parameter READSJ                =   8'b0000_0101;   
+parameter WAIT_SJ               =   8'b0000_0110;   
+parameter SWAP_SJ               =   8'b0000_0111;   
+parameter SWAP_SI               =   8'b0000_1000;   
+parameter B_READ_SI             =   8'b0000_1001;   
+parameter B_WAIT_SI             =   8'b0000_1010;   
+parameter CALC_READ_J           =   8'b0000_1011; 
+parameter WAIT_READ_J           =   8'b0000_1100;   
+parameter B_SWAP_SJ             =   8'b0000_1101;  
+parameter B_SWAP_SI             =   8'b0000_1110;   
+parameter READF                 =   8'b0000_1111;     
+parameter READ_E                =   8'b0001_0000;   
+parameter WAIT_F                =   8'b0001_0001;    
+parameter STORE                 =   8'b0001_0010;  
+parameter LOOP                  =   8'b0001_0011;    
+parameter BUFFER                =   8'b0001_0100;
+parameter CRACKED               =   8'b0001_0101;
+parameter FAILED                =   8'b0001_0110;
+parameter NEXT_KEY              =   8'b0001_0111;
+
+logic [7:0] s_data, data_d;
+logic [9:0] LEDS;
+logic [7:0] s_addr, d_addr, e_addr;
+logic s_wren, wren_d;
+logic [7:0] s_q, e_q, d_q;
+logic [7:0] read_i, read_j, f_read;
+logic [7:0] state;
+byte secret_key_byte[3];
+logic [23:0] secret_key;
+logic [7:0] i, j;
+logic [4:0] k;
+
+assign success_key = secret_key;
+
+s_memory S(
+        .address(s_addr),		
+		.clock(clk),		
+		.data(s_data),		
+		.wren(s_wren),		
+		.q(s_q)		
+	);
+
+ d_memory D(
+	.address(d_addr),
+	.clock(clk),
+	.data(data_d),
+	.wren(wren_d),
+	.q(d_q)
+	);
+	
+ e_memory E(
+	.address({e_addr}),
+	.clock(clk),
+	.q(e_q));
+
+
+always_ff@(posedge clk or posedge stop or negedge reset) 
+begin
+    if(!reset) state <= INITIALIZE;
+    else if(stop) state <= BUFFER;
+	else 
+    begin
+        case(state)
+            INITIALIZE: 
+                begin             
+                    {i, j, s_data, s_addr} <= {8'b0,8'b0,8'b0,8'b0}; 
+                    LEDS <= 10'b0; 
+                    secret_key <= key_start;          
+                    state <= FILL_S;   
+                    success <= 1'b0;
+                    fail <= 1'b0;
+                end
+            FILL_S: 
+                begin             
+                    s_wren <= 1'b1;
+                    s_addr <= i;          
+                    s_data <= i;         
+                    if(s_data < 8'd255) 
+                        begin  
+                            i <= i+1'b1;                      
+                            state <= FILL_S; 
+                        end
+                    else 
+                        begin
+                            s_wren <= 1'b0;          
+                            state <= READ_SI;               
+                            i <= 0;                            
+                        end
+                end
+            READ_SI: 
+                begin 
+                    s_addr <= i;            
+                    s_wren <= 1'b0;	 	
+                    state <= WAIT_SI;		
+				end
+            WAIT_SI:    
+                begin
+                    state <= CALCJ;
+                end
+            CALCJ: 
+                begin            
+                    read_i = s_q;    
+					j <= (j + read_i + secret_key_byte[i%3]);
+                    state <= READSJ;     
+                end
+            READSJ: 
+                begin
+                    s_wren <= 0;   
+                    s_addr <= j;           
+                    state <= WAIT_SJ;        
+                end
+            WAIT_SJ: state <= SWAP_SJ;
+            SWAP_SJ: 
+                begin            
+                    read_j <= s_q;   
+                    s_data <= read_i;   
+                    s_addr <= j;           
+                    s_wren <= 1'b1;   
+                    state <= SWAP_SI;      
+                end
+            SWAP_SI: 
+                begin	
+                    s_data <= read_j;   
+                    s_addr = i;           
+                    s_wren <= 1'b1;   
+
+                    if(i < 8'd255)
+                        begin      
+                            i <= i+1'b1;        
+                            state <= READ_SI;   
+                        end
+                    else 
+                        begin
+                            state <= B_READ_SI;     
+                            i <= 8'd0;
+                            j <= 8'd0;
+                            k <= 8'd0;
+                        end
+                end 
+            B_READ_SI: 
+                begin
+                    i = i + 1'b1;              
+                    s_wren <= 1'b0;   
+                    wren_d <= 1'b0;           
+                    s_addr <= i;           
+                    state <= B_WAIT_SI;     
+                end
+
+            B_WAIT_SI: state <= CALC_READ_J;
+            CALC_READ_J: 
+                begin
+                    read_i = s_q;    
+                    j = j+read_i;           
+                    s_addr <= j;           
+                    s_wren = 1'b0;    
+                    state <= WAIT_READ_J;     
+                end
+            WAIT_READ_J: state <= B_SWAP_SJ;
+            B_SWAP_SJ:
+                begin         
+                    read_j = s_q;        
+                    s_addr <= j;              
+                    s_data <= read_i;      
+                    s_wren <= 1'b1;       
+                    state <= B_SWAP_SI;         
+                end
+            B_SWAP_SI: 
+                begin 
+                    s_addr <= i;              
+                    s_data <= read_j;      
+                    s_wren = 1'b1;        
+                    state <= READF;             
+                end
+            READF: 
+                begin
+                    s_wren <= 1'b0;      
+                    s_addr <= read_i+read_j;
+                    state <= READ_E;           
+                end
+            READ_E: 
+                begin
+                    e_addr <= k;          
+                    state <= WAIT_F;          
+                end
+            WAIT_F:
+                begin
+                    f_read=s_q;        
+                    state<= STORE;
+                end
+            STORE:
+                begin
+                    data_d <= (f_read ^ e_q);     
+                    d_addr <= k;               
+                    wren_d <= 1'b1;        
+                    state <= LOOP;		        
+                end
+            LOOP: 
+                begin
+                    if((data_d >= 8'd97) && (data_d <= 8'd122) || (data_d == 8'd32))
+                        begin 
+                            if (k < 5'd31) 
+                                begin          
+                                    k <= k + 1'b1;              
+                                    state <= B_READ_SI;
+                                end 
+                            else  state <= CRACKED; 
+                        end
+                    else state <= NEXT_KEY;
+                end
+            NEXT_KEY:
+                begin
+                    secret_key <= secret_key + 24'b1;
+                    if(secret_key > key_end) state <= FAILED; //24'b00111111_11111111_11111111   
+                    else
+                        begin
+                            {i, j, s_data, s_addr, wren_d, s_wren} <= {8'b0,8'b0,8'b0,8'b0,1'b0,1'b0};  
+                            state <= FILL_S;
+                        end
+                end
+            FAILED:
+                begin
+                    state <= BUFFER;
+                    fail <= 1'b1;
+                end
+            CRACKED:
+                begin
+                    state <= BUFFER;
+                    success <= 1'b1;
+                end      
+            BUFFER: 
+                begin    
+                    wren_d <= 1'b0;
+                    s_wren <= 1'b0;
+                    i <= 8'b0;
+                    j <= 8'b0;
+                    k <= 8'b0;
+                    state <= BUFFER;
+                end
+            default: state <= INITIALIZE;
+            endcase
+    end
+end 
+
+always_comb
+begin
+    secret_key_byte[0] <= secret_key[23:16];
+    secret_key_byte[1] <= secret_key[15:8];
+    secret_key_byte[2] <= secret_key[7:0];      
+end
+
+endmodule
